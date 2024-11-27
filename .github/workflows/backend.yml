@@ -8,14 +8,45 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.14.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
 
   deploy_main:
+    needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
+
+      - name: Create .env file dynamically
+        run: |
+          echo "Creating .env file..."
+          echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
+
+      - name: Create config folder and files
+        run: |
+          echo "Creating config folder..."
+          mkdir -p config
+          echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
 
       - name: Create .htaccess file
         run: |
@@ -30,41 +61,46 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
 
-  # deploy_testing:
-  #   needs: build
-  #   if: github.ref == 'refs/heads/testing'
-  #   runs-on: ubuntu-latest
+      - name: Trigger npm install on server
+        run: |
+            echo "Triggering npm install and pm2 start via PHP script..."
+            curl -X GET "https://rauf.theshippinghack.com/trigger.php"
 
-  #   steps:
+  deploy_testing:
+    needs: build
+    if: github.ref == 'refs/heads/testing'
+    runs-on: ubuntu-latest
+
+    steps:
       
-  #     - name: 🚚 Get latest code
-  #       uses: actions/checkout@v2
-  #     - name: Create .env file dynamically
-  #       run: |
-  #         echo "Creating .env file..."
-  #         echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+      - name: Create .env file dynamically
+        run: |
+          echo "Creating .env file..."
+          echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
 
-  #     - name: Create config folder and files
-  #       run: |
-  #         echo "Creating config folder..."
-  #         mkdir -p config
-  #         echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
+      - name: Create config folder and files
+        run: |
+          echo "Creating config folder..."
+          mkdir -p config
+          echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
 
-  #     - name: Create .htaccess file
-  #       run: |
-  #         echo "Creating .htaccess file..."
-  #         echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+      - name: Create .htaccess file
+        run: |
+          echo "Creating .htaccess file..."
+          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
 
 
-  #     - name: 📂 Sync files to development
-  #       uses: SamKirkland/FTP-Deploy-Action@v4.2.0
-  #       with:
-  #         server: ftp.theshippinghack.com
-  #         username: ${{ secrets.FTP_USERNAME }}
-  #         password: ${{ secrets.FTP_PASSWORD }}
-  #         debug: true
+      - name: 📂 Sync files to development
+        uses: SamKirkland/FTP-Deploy-Action@v4.2.0
+        with:
+          server: ftp.theshippinghack.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          debug: true
 
-  #     - name: Trigger npm install on server
-  #       run: |
-  #           echo "Triggering npm install and pm2 start via PHP script..."
-  #           curl -X GET "https://rauf.theshippinghack.com/trigger.php"
+      - name: Trigger npm install on server
+        run: |
+            echo "Triggering npm install and pm2 start via PHP script..."
+            curl -X GET "https://rauf.theshippinghack.com/trigger.php"

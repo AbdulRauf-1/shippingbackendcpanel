@@ -49,17 +49,3 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-
-
-controller/
-helper/
-middleware/
-models/
-routes/
-seeders/
-utils/
-logo.png
-package-lock.json
-package.json
-shipping.json
-trigger.php
