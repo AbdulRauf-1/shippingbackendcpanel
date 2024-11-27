@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: node:18.20.4
+      image: node:16.14.0
 
     steps:
       - uses: actions/checkout@v2
@@ -42,6 +42,11 @@ jobs:
           echo "Creating .env file..."
           echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
 
+      - name: Create firebase.json file dynamically
+        run: |
+          echo "Creating firebase.json file..."
+          echo "${{ secrets.FIREBASE_CONTENT }}" > firebase.json
+
       - name: Create config folder and files
         run: |
           echo "Creating config folder..."
@@ -57,14 +62,14 @@ jobs:
       - name: Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
-          server: ftp.trimworldwide.com
+          server: ftp.theshippinghack.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
 
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://rauf.trimworldwide.com/trigger.php"
+            curl -X GET "https://rauf.theshippinghack.com/trigger.php"
 
   deploy_testing:
     needs: build
@@ -103,4 +108,4 @@ jobs:
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://rauf.trimworldwide.com/trigger.php"
+            curl -X GET "https://rauf.theshippinghack.com/trigger.php"
