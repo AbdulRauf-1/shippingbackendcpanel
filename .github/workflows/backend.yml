@@ -8,12 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
 
   deploy_main:
-    needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
