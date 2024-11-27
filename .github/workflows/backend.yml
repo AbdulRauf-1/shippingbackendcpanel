@@ -65,7 +65,7 @@ jobs:
       - name: Trigger npm install on server
         run: |
               echo "Triggering npm install via PHP script..."
-              curl -X GET "https://testing.theshippinghack.com/trigger.php"
+              curl -X GET "https://rauf.trimworldwide.com/trigger.php"
 
   deploy_testing:
     needs: build
@@ -104,4 +104,4 @@ jobs:
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://testing.theshippinghack.com/trigger.php"
+            curl -X GET "https://rauf.trimworldwide.com/trigger.php"
