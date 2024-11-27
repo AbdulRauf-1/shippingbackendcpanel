@@ -42,6 +42,11 @@ jobs:
           echo "Creating .env file..."
           echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
 
+      - name: Create firebase.json file dynamically
+        run: |
+          echo "Creating firebase.json file..."
+          echo "${{ secrets.FIREBASE_CONTENT }}" > firebase.json
+
       - name: Create config folder and files
         run: |
           echo "Creating config folder..."
