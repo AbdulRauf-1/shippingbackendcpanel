@@ -23,7 +23,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
       - name: Install dependencies
         run: npm ci
 
@@ -36,35 +35,36 @@ jobs:
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
-
+      - name: Check deployment flag
+        id: check-flag
+        run: |
+          DEPLOY_FLAG="yes" # Set the flag here. Change to "yes" to enable deployment.
+          echo "Deployment flag is set to: $DEPLOY_FLAG"
+          if [ "$DEPLOY_FLAG" != "yes" ]; then
+            echo "Deployment flag is not set to 'yes'. Skipping deployment."
+            exit 0
+          fi
       - name: Create .env file dynamically
         run: |
           echo "Creating .env file..."
-          echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
-
-      - name: Create firebase.json file dynamically
-        run: |
-          echo "Creating firebase.json file..."
-          echo "${{ secrets.FIREBASE_CONTENT }}" > firebase.json
-
+          echo "${{ secrets.ENV_FILE_CONTENT_PROD}}" > .env
       - name: Create config folder and files
         run: |
           echo "Creating config folder..."
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
-
       - name: Create .htaccess file
         run: |
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
 
-
-      - name: Sync files to development
+      - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
           server: ftp.theshippinghack.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          debug: true
 
       - name: Trigger npm install on server
         run: |
@@ -83,19 +83,16 @@ jobs:
       - name: Create .env file dynamically
         run: |
           echo "Creating .env file..."
-          echo "${{ secrets.ENV_FILE_CONTENT_PROD }}" > .env
-
+          echo "${{ secrets.ENV_FILE_CONTENT_STAGE }}" > .env
       - name: Create config folder and files
         run: |
           echo "Creating config folder..."
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
-
       - name: Create .htaccess file
         run: |
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-
 
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
