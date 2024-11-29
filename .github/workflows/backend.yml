@@ -55,17 +55,21 @@ jobs:
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
 
-      - name: Create .htaccess file
-        run: |
-          echo "Creating .htaccess file..."
-          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+
+      # Overwrite or restore `.htaccess` from GitHub Secret
+      - name: Restore .htaccess
+        run: echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+
+      # Validate `.htaccess`
+      - name: Validate .htaccess File
+        run: |
+          curl -s "https://rauf.trimworldwide.com//.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4004/$1 [P,L]"
 
       - name: Trigger npm install on server
         run: |
