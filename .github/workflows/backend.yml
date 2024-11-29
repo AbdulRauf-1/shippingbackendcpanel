@@ -94,6 +94,11 @@ jobs:
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
 
+      - name: Create firebase.json file
+        run: |
+          echo "Creating firebase.json file..."
+          echo "${{ secrets.FIREBASE_CONTENT }}" >  firebase.json
+
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
