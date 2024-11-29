@@ -55,13 +55,6 @@ jobs:
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
 
-      - name: 📂 Sync files to development
-        uses: SamKirkland/FTP-Deploy-Action@v4.2.0
-        with:
-          server: ftp.trimworldwide.com
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-      
       - name: Create .htaccess file
         run: |
           echo "Creating .htaccess file..."
