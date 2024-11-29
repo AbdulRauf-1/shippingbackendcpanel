@@ -65,15 +65,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
 
-      # Overwrite or restore `.htaccess` from GitHub Secret
-      - name: Restore .htaccess
-        run: echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-
-      # Validate `.htaccess`
-      - name: Validate .htaccess File
-        run: |
-          curl -s "https://testingtsh.fomino.ch/.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4061/$1 [P,L]"
-
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
