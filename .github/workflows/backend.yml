@@ -69,7 +69,7 @@ jobs:
       # Validate `.htaccess`
       - name: Validate .htaccess File
         run: |
-          curl -s "https://rauf.trimworldwide.com//.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4004/$1 [P,L]"
+          curl -s "https://rauf.trimworldwide.com/.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4004/$1 [P,L]"
 
       - name: Trigger npm install on server
         run: |
