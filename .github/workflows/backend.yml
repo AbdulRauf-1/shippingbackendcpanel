@@ -106,6 +106,3 @@ jobs:
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
             curl -X GET "https://testingtsh.fomino.ch/trigger.php"
-
-
-            
