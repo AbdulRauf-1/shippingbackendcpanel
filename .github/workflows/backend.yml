@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: node:16.14.0
+      image: node:16.20.2
 
     steps:
       - uses: actions/checkout@v2
@@ -49,6 +49,9 @@ jobs:
           echo "Creating .env file..."
           echo "${{ secrets.ENV_FILE_CONTENT_PROD}}" > .env
       
+      - name: Create .htaccess
+        run: echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+      
       - name: Create config folder and files
         run: |
           echo "Creating config folder..."
@@ -58,7 +61,7 @@ jobs:
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
-          server: ftp.trimworldwide.com
+          server: ftp.fomino.ch
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
 
@@ -69,12 +72,12 @@ jobs:
       # Validate `.htaccess`
       - name: Validate .htaccess File
         run: |
-          curl -s "https://rauf.trimworldwide.com/.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4004/$1 [P,L]"
+          curl -s "https://testingtsh.fomino.ch/.htaccess" | grep "RewriteRule ^(.*)$ http://127.0.0.1:4061/$1 [P,L]"
 
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://rauf.trimworldwide.com/trigger.php"
+            curl -X GET "https://testingtsh.fomino.ch/trigger.php"
 
   deploy_testing:
     needs: build
@@ -102,7 +105,7 @@ jobs:
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
-          server: ftp.theshippinghack.com
+          server: ftp.fomino.ch
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           debug: true
