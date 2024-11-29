@@ -60,7 +60,6 @@ jobs:
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
 
-
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
