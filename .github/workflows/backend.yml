@@ -58,11 +58,12 @@ jobs:
         run: |
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+          cat .htaccess
 
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
-          server: ftp.theshippinghack.com
+          server: ftp.trimworldwide.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           debug: true
@@ -107,3 +108,6 @@ jobs:
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
             curl -X GET "https://rauf.theshippinghack.com/trigger.php"
+
+
+            
