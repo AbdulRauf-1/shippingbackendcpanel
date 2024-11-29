@@ -49,9 +49,9 @@ jobs:
           echo "Creating .env file..."
           echo "${{ secrets.ENV_FILE_CONTENT_PROD}}" > .env
       
-      # - name: Create .htaccess
-      #   run: |
-      #     echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+      - name: Create .htaccess
+        run: |
+          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
       
       - name: Create config folder and files
         run: |
@@ -66,12 +66,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           exclude: .htaccess
-
-      - name: Upload .htaccess file
-        run: |
-          echo "Uploading .htaccess file..."
-          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-          curl -T .htaccess ftp://ftp.fomino.ch/.htaccess --user "${{ secrets.FTP_USERNAME }}:${{ secrets.FTP_PASSWORD }}"
 
       - name: Trigger npm install on server
         run: |
