@@ -50,7 +50,9 @@ jobs:
           echo "${{ secrets.ENV_FILE_CONTENT_PROD}}" > .env
       
       - name: Create .htaccess
-        run: echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
+        run: |
+          touch .htaccess
+          echo "${{ secrets.HTACCESS_CONTENT }}" >> .htaccess
       
       - name: Create config folder and files
         run: |
@@ -104,7 +106,7 @@ jobs:
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://rauf.theshippinghack.com/trigger.php"
+            curl -X GET "https://testingtsh.fomino.ch/trigger.php"
 
 
             
