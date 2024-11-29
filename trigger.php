@@ -14,16 +14,16 @@ $npmPath = '/home/fomino/.nvm/versions/node/v16.20.2/bin/npm';
 $exportPath = 'export PATH=$PATH:/home/fomino/.nvm/versions/node/v16.20.2/bin';
 
 // Set permissions for node and npm binaries
-$setBinaryPermissions = shell_exec("chmod +x $nodePath $npmPath 2>&1");
+exec("chmod +x $nodePath $npmPath", $output, $status);
 
 // Set permissions for the working directory
-$setDirPermissions = shell_exec("chmod -R 775 $workingDir 2>&1");
+exec("chmod -R 775 $workingDir", $output, $status);
 
 // Run npm install with explicit PATH export
-$output = shell_exec("$exportPath && cd $workingDir && $npmPath install 2>&1");
+exec("$exportPath && cd $workingDir && $npmPath install", $output, $status);
 
 // Display results
-echo "Binary Permissions Output:<br />" . nl2br($setBinaryPermissions) . "<br />";
-echo "Directory Permissions Output:<br />" . nl2br($setDirPermissions) . "<br />";
-echo "NPM Install Output:<br />" . nl2br($output) . "<br />";
+echo "Binary Permissions Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
+echo "Directory Permissions Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
+echo "NPM Install Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
 ?>
