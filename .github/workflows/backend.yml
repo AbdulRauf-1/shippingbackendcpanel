@@ -48,6 +48,11 @@ jobs:
         run: |
           echo "Creating .env file..."
           echo "${{ secrets.ENV_FILE_CONTENT_PROD}}" > .env
+
+      - name: Create .htaccess file
+        run: |
+          echo "Creating .htaccess file..."
+          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
       
       - name: Create config folder and files
         run: |
@@ -55,29 +60,25 @@ jobs:
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
 
-      - name: Create .htaccess file
-        run: |
-          echo "Creating .htaccess file..."
-          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-
-      - name: Debug .htaccess file before deployment
-        run: |
-          echo "Debugging .htaccess file content before deployment..."
-          cat .htaccess
-
-      - name: 📂 Sync files to production
+      - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
         with:
           server: ftp.trimworldwide.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          debug: true
-
-      - name: Debug .htaccess file on server
+      
+      - name: Create .htaccess file
         run: |
-          echo "Debugging .htaccess file content after deployment..."
-          curl -sS ftp://$FTP_USERNAME:$FTP_PASSWORD@ftp.trimworldwide.com/.htaccess
+          echo "Creating .htaccess file..."
+          echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
 
+
+      - name: 📂 Sync files to development
+        uses: SamKirkland/FTP-Deploy-Action@v4.2.0
+        with:
+          server: ftp.trimworldwide.com
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
 
       - name: Trigger npm install on server
         run: |
