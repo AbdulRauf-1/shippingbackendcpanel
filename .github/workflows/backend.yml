@@ -54,11 +54,12 @@ jobs:
           echo "Creating config folder..."
           mkdir -p config
           echo "${{ secrets.CONFIG_JSON_CONTENT }}" > config/config.json
+          
       - name: Create .htaccess file
         run: |
           echo "Creating .htaccess file..."
           echo "${{ secrets.HTACCESS_CONTENT }}" > .htaccess
-          cat .htaccess
+
 
       - name: 📂 Sync files to development
         uses: SamKirkland/FTP-Deploy-Action@v4.2.0
@@ -66,12 +67,11 @@ jobs:
           server: ftp.trimworldwide.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          debug: true
 
       - name: Trigger npm install on server
         run: |
             echo "Triggering npm install and pm2 start via PHP script..."
-            curl -X GET "https://rauf.theshippinghack.com/trigger.php"
+            curl -X GET "https://rauf.trimworldwide.com/trigger.php"
 
   deploy_testing:
     needs: build
