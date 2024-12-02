@@ -11,7 +11,7 @@ $nodeBinPath = '/home/theshippinghack/node/bin';  // Update this with the correc
 //$output = shell_exec("export HOME=/home/theshippinghack && export PATH=$PATH:$nodeBinPath:$pm2BinPath && cd $workingDir && pm2 stop rauf || true");
 
 // Run npm install and start the app with pm2
-$output= shell_exec("export HOME=/home/theshippinghack && export PATH=$PATH:$nodeBinPath && cd $workingDir && npm install && pm2 start shipping.js --name rauf 2>&1");
+$output= shell_exec("export HOME=/home/theshippinghack && export PATH=$nodeBinPath:$PATH && cd $workingDir && npm install && pm2 start shipping.js --name rauf 2>&1");
 
 // Output the result
 echo nl2br($output);
