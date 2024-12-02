@@ -1,29 +1,10 @@
 <?php
-// Enable error reporting
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 // Path to your working directory
-$workingDir = '/home/fomino/testingtsh.fomino.ch';
+$workingDir = '/home/theshippinghack/testing.theshippinghack.com';
 
-// Full path to node and npm binaries
-$nodePath = '/home/fomino/.nvm/versions/node/v16.20.2/bin/node';
-$npmPath = '/home/fomino/.nvm/versions/node/v16.20.2/bin/npm';
+// Set HOME environment variable and run commands
+$output = shell_exec("export HOME=/home/theshippinghack && cd $workingDir && npm install 2>&1");
 
-// Export PATH for the script to find node and npm
-$exportPath = 'export PATH=$PATH:/home/fomino/.nvm/versions/node/v16.20.2/bin';
-
-// Set permissions for node and npm binaries
-exec("chmod +x $nodePath $npmPath", $output, $status);
-
-// Set permissions for the working directory
-exec("chmod -R 775 $workingDir", $output, $status);
-
-// Run npm install with explicit PATH export
-exec("$exportPath && cd $workingDir && $npmPath install", $output, $status);
-
-// Display results
-echo "Binary Permissions Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
-echo "Directory Permissions Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
-echo "NPM Install Output:<br />" . nl2br(implode("\n", $output)) . "<br />";
+// Output the result
+echo nl2br($output);
 ?>
